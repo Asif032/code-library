@@ -41,7 +41,7 @@ void neg_cycle() {
   }
   reverse (path.begin(), path.end());
   cout << "Negative cycle : ";
-  for(size_t i = 0; i < path.size(); i++) {
+  for(int i = 0; i < path.size(); i++) {
     cout << path[i] << ' ';
   }
 }
