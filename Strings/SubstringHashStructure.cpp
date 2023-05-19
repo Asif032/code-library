@@ -7,8 +7,8 @@ struct hash_table {
 
   int power(int a, int b, int mod) {
     int res = 1;
-    while(b) {
-      if(b & 1) res = 1LL * res * a % mod;
+    while (b) {
+      if (b & 1) res = 1LL * res * a % mod;
       a = 1LL * a * a % mod;
       b >>= 1;
     }
@@ -46,7 +46,9 @@ struct hash_table {
   }
 
   pair<int, int> get_hash(int i, int j) {
-    assert(i <= j);
+    if (i > j) {
+      return {0, 0};
+    }
     pair<int, int> hs({0, 0});
     hs.first = pref[j].first;
     if (i > 0) {
@@ -73,12 +75,15 @@ struct hash_table {
 int main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
-  string s, t;
-  cin >> s >> t;
-  int n = s.length(), m = t.length();
-  hash_table h1, h2;
-  h1.build(s);
-  h2.build(t);
-  
+  int T = 1;
+  cin >> T;
+  while (T--) {
+    string s, t;
+    cin >> s >> t;
+    int n = s.length(), m = t.length();
+    hash_table h1, h2;
+    h1.build(s);
+    h2.build(t);
+  }
   return 0;
 }

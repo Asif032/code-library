@@ -25,7 +25,7 @@ struct segtree {
       t[x] = single(a[lx]);
       return;
     }
-    int mid = (lx + rx) / 2;
+    int mid = (lx + rx) >> 1;
     build(a, 2 * x + 1, lx, mid);
     build(a, 2 * x + 2, mid + 1, rx);
     t[x] = merge(t[2 * x + 1], t[2 * x + 2]);
@@ -38,7 +38,7 @@ struct segtree {
       t[x] = single(v);
       return;
     }
-    int mid = (lx + rx) / 2;
+    int mid = (lx + rx) >> 1;
     if (i <= mid) {
       update(i, v, 2 * x + 1, lx, mid);
     } else {
@@ -52,7 +52,7 @@ struct segtree {
   item query(int l, int r, int x, int lx, int rx) {
     if (lx > r || rx < l) return NEUTRAL_ELEMENT;
     if (lx >= l && rx <= r) return t[x];
-    int mid = (lx + rx) / 2;
+    int mid = (lx + rx) >> 1;
     item lc = query(l, r, 2 * x + 1, lx, mid);
     item rc = query(l, r, 2 * x + 2, mid + 1, rx);
     return merge(lc, rc);

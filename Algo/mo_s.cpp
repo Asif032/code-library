@@ -12,18 +12,18 @@ struct Query {
     if (l / BLOCK_SIZE != other.l / BLOCK_SIZE) {
       return l < other.l;
     }
-    return (l / BLOCK_SIZE & 1) ? (r < other.r) : (r > other.r);
+    return (l / BLOCK_SIZE & 1) ? r < other.r : r > other.r;
   }
 };
 
-void add(int id) {
-  cnt[a[id]]++;
-  if (cnt[a[id]] == 1) res++;
+void add(int i) {
+  cnt[a[i]]++;
+  if (cnt[a[i]] == 1) res++;
 }
 
-void remove(int id) {
-  cnt[a[id]]--;
-  if (cnt[a[id]] == 0) res--;
+void remove(int i) {
+  cnt[a[i]]--;
+  if (cnt[a[i]] == 0) res--;
 }
 
 int get_ans() {
@@ -33,25 +33,13 @@ int get_ans() {
 vector<int> mo_s(vector<Query> &Q) {
   sort(Q.begin(), Q.end());
   vector<int> ans(Q.size());
-  int cur_l = 0;
-  int cur_r = -1;
+  int L = 0;
+  int R = -1;
   for (Query q : Q) {
-    while (cur_l > q.l) {
-      cur_l--;
-      add(cur_l);
-    }
-    while (cur_r < q.r) {
-      cur_r++;
-      add(cur_r);
-    }
-    while (cur_l < q.l) {
-      remove(cur_l);
-      cur_l++;
-    }
-    while (cur_r > q.r) {
-      remove(cur_r);
-      cur_r--;
-    }
+    while (L < q.l) remove(L++);
+    while (L > q.l) add(--L);
+    while (R < q.r) add(++R);
+    while (R > q.r) remove(R--);
     ans[q.id] = get_ans();
   }
   return ans;

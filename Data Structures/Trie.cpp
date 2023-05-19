@@ -9,77 +9,78 @@ struct Node {
 
 struct Trie {
   Node* root;
-
   Trie() {
     root = new Node();
   }
 
   void insert(string word) {
     Node* node = root;
-    for (char ch : word) {
-      if (node->next[ch - 'a'] == NULL) {
-        node->next[ch - 'a'] = new Node();
+    for (char x : word) {
+      if (node->next[x - 'a'] == NULL) {
+        node->next[x - 'a'] = new Node();
       }
-      node = node->next[ch - 'a'];
+      node = node->next[x - 'a'];
       node->pref++;
     }
     node->word++;
   }
 
-  bool search(string word) {
-    Node* node = root;
-    for (char ch : word) {
-      if (node->next[ch - 'a'] == NULL) {
-        return false;
-      }
-      node = node->next[ch - 'a'];
-    }
-    return (node->word != 0);
-  }
-
-  bool isPrefix(string word) {
-    Node* node = root;
-    for (char ch : word) {
-      if (node->next[ch - 'a'] == NULL) {
-        return false;
-      }
-      node = node->next[ch - 'a'];
-    }
-    return true;
-  }
-
   int countWords(string word) {
     Node* node = root;
-    for (char ch : word) {
-      if (node->next[ch - 'a'] == NULL) {
+    for (char x : word) {
+      if (node->next[x - 'a'] == NULL) {
         return 0;
       }
-      node = node->next[ch - 'a'];
+      node = node->next[x - 'a'];
     }
     return node->word;
   }
 
   int countPrefix(string word) {
     Node* node = root;
-    for (char ch : word) {
-      if (node->next[ch - 'a'] == NULL) {
+    for (char x : word) {
+      if (node->next[x - 'a'] == NULL) {
         return 0;
       }
-      node = node->next[ch - 'a'];
+      node = node->next[x - 'a'];
     }
     return node->pref;
   }
 
-  void deleteWord(string word) {
-    Node* node = root;
-    for (char ch : word) {
-      if (node->next[ch - 'a'] == NULL) {
-        return;
+  bool isEmpty(Node* node) {
+    for (int i = 0; i < 26; i++) {
+      if (node->next[i]) {
+        return false;
       }
-      node = node->next[ch - 'a'];
     }
-    node->pref--;
-    if (node->word) node->word--;
+    return true;
+  }
+  
+  Node* remove(Node* node, string &key, int depth) {
+    if (node == NULL) {
+      return NULL;
+    }
+    if (depth == key.size()) {
+      if (node->word) {
+        node->word--;
+      }
+      if (isEmpty(node) && !node->word) {
+        delete node;
+        node = NULL;
+      }
+      return node;
+    }
+    int id = key[depth] - 'a';
+    node->next[id] = remove(node->next[id], key, depth + 1);
+    if (isEmpty(node) && !node->word) {
+      delete(node);
+      node = NULL;
+    }
+    return node;
+  }
+
+  void remove(string word) {
+    root = remove(root, word, 0);
   }
 
   void clear(Node* node) {
@@ -103,7 +104,7 @@ int main() {
   cin >> T;
   while (T--) {
     Trie trie;
-
+    
     trie.clear();
   }
   return 0;
