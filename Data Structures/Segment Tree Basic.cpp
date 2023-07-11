@@ -3,7 +3,7 @@ using namespace std;
 
 const int N = 1e5 + 5;
 int t[4 * N];
-const int NEUTRAL_ELEMENT = 0;
+const int NEUTRAL_ELEMENT = 0;   // modify this
 int a[N];
 
 void build(int x, int lx, int rx) {
