@@ -62,14 +62,6 @@ struct hash_table {
     hs.second = 1LL * hs.second * ipw[i].second % mod2;
     return hs;
   }
-
-  pair<int, int> merge(pair<int, int> h1, pair<int, int> h2, int l1) {
-    h1.first += 1LL * h2.first * pw[l1].first % mod1;
-    h1.first %= mod1;
-    h1.second += 1LL * h2.second * pw[l1].second % mod2;
-    h1.second %= mod2;
-    return h1;
-  }
 };
 
 int main() {

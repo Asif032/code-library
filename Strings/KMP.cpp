@@ -8,13 +8,15 @@ void build() {
   lps[0] = 0;
   for (int i = 1; i < pattern.size(); i++) {
     int j = lps[i - 1];
-    while (j > 0 && pattern[i] != pattern[j]) j = lps[j - 1];
+    while (j > 0 && pattern[i] != pattern[j]) {
+      j = lps[j - 1];
+    }
     if (pattern[i] == pattern[j]) j++;
     lps[i] = j;
   }
 }
 
-int KMP() {
+int kmp() {
   int n = text.size();
   int m = pattern.size();
   int j = 0;
@@ -30,21 +32,6 @@ int KMP() {
   return -1;
 }
 
-int kmp() {
-  string s = pattern + '#' + text;
-  int n = text.size();
-  int m = pattern.size();
-  int lps[n + m];
-  lps[0] = 0;
-  for (int i = 1; i <= n + m; i++) {
-    int j = lps[i - 1];
-    while (j != 0 && s[i] != s[j]) j = lps[j - 1];
-    if (s[i] == s[j]) j++;
-    lps[i] = j;
-    if (lps[i] == m) return i - 2 * m + 1;
-  }
-  return -1;
-}
 int main() {
   cin >> pattern;
   build();

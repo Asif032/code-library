@@ -20,8 +20,8 @@ bool isValid(int x, int y) {
 void dfs(int x, int y) {
   vis[x][y] = 1;
   for (int i = 0; i < 4; i++) {
-    int xx = x + dx[i], Y = y + dy[i];
-    if (isValid(xx, Y)) dfs(xx, Y);
+    int xx = x + dx[i], yy = y + dy[i];
+    if (isValid(xx, yy)) dfs(xx, yy);
   }
 }
 
