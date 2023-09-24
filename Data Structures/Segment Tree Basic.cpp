@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-const int N = 1e5 + 5;
+const int N = 2e5 + 5;
 int t[4 * N];
 const int NEUTRAL_ELEMENT = 0;   // modify this
 int a[N];
@@ -14,12 +14,12 @@ void build(int x, int lx, int rx) {
   int mid = (lx + rx) >> 1;
   build(2 * x + 1, lx, mid);
   build(2 * x + 2, mid + 1, rx);
-  t[x] = (t[2 * x + 1] | t[2 * x + 2]);   // modify this
+  t[x] = max(t[2 * x + 1], t[2 * x + 2]);   // modify this
 }
 
 void update(int i, int v, int x, int lx, int rx) {
   if (lx == rx) {
-    t[x] = 1 << v;   // modify this
+    t[x] = v;   // modify this
     return;
   }
   int mid = (lx + rx) >> 1;
@@ -28,7 +28,7 @@ void update(int i, int v, int x, int lx, int rx) {
   } else {
     update(i, v, 2 * x + 2, mid + 1, rx);
   }
-  t[x] = (t[2 * x + 1] | t[2 * x + 2]);   // modify this
+  t[x] = max(t[2 * x + 1], t[2 * x + 2]);   // modify this
 }
 
 int query(int l, int r, int x, int lx, int rx) {
@@ -37,7 +37,7 @@ int query(int l, int r, int x, int lx, int rx) {
   int mid = (lx + rx) >> 1;
   int lc = query(l, r, 2 * x + 1, lx, mid);
   int rc = query(l, r, 2 * x + 2, mid + 1, rx);
-  return (lc | rc);    // modify this
+  return max(lc, rc);    // modify this
 }
 
 int main() {

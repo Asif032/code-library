@@ -4,7 +4,7 @@
 using namespace __gnu_pbds;
 using namespace std;
 
-template <typename T> using o_set = tree<T, null_type, less<T>,
+template <typename T> using ordered_set = tree<T, null_type, less<T>,
 rb_tree_tag, tree_order_statistics_node_update>;
 
 int main() {

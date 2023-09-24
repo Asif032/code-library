@@ -10,7 +10,9 @@ bool dfs(int node, int p) {
   for(int to : adj[node]) {
     if(!vis[to]) {
       if (dfs(to, node)) return true;
-    } else if (vis[to] && to != p) return true;
+    } else if (vis[to] && to != p) {
+      return true;
+    }
   }
   return false;
 }
