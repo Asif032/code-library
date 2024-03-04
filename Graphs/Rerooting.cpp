@@ -3,8 +3,8 @@ using namespace std;
 
 const int N = 2e5 + 5;
 vector<int> adj[N];
-int dp[N], sub[N];
-int res = 0;
+int sub[N];
+long long dp[N], res = 0;
 
 void dfs(int node, int par) {
   sub[node] = 1;
@@ -20,7 +20,6 @@ void dfs(int node, int par) {
 }
 
 void dfs1(int node, int par) {
-  // cout << node << ' ' << dp[node] << '\n';
   res = max(res, dp[node]);
   for (int to : adj[node]) {
     if (to != par) {
@@ -50,7 +49,7 @@ int main() {
   cin.tie(0);
   int n;
   cin >> n;
-  for (int i = 0; i < n - 1; i++) {
+  for (int i = 1; i < n; i++) {
     int x, y;
     cin >> x >> y;
     adj[x].push_back(y);

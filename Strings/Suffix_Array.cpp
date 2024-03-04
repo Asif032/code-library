@@ -68,8 +68,23 @@ int main() {
     c = c_new;
     k++;
   }
+  vector<int> lcp(n);
+  k = 0;
+  for (int i = 0; i < n - 1; i++) {
+    int pi = c[i];
+    int j = p[pi - 1];
+    while (s[i + k] == s[j + k]) k++;
+    lcp[pi] = k;
+    k = max(k - 1, 0);
+  }
+  // for (int i = 0; i < n; i++) {
+  //   cout << lcp[i] << " " << p[i] << " " << s.substr(p[i], n - p[i]) << "\n";
+  // }
   for (int i = 0; i < n; i++) {
-    cout << p[i] << " " << s.substr(p[i], n - p[i]) << "\n";
+    cout << p[i] << " \n"[i == n - 1];
+  }
+  for (int i = 1; i < n; i++) {
+    cout << lcp[i] << ' ';
   }
   return 0;
 }

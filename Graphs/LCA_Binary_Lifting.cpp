@@ -2,40 +2,57 @@
 using namespace std;
 
 const int N = 2e5 + 5;
-const int M = 20;
+const int M = 18;
 vector<int> adj[N];
-int par[N][M], level[N];
+int par[N][M + 1], level[N];
 
-void dfs(int node, int p, int l) {
+void dfs(int node, int p = 0) {
   par[node][0] = p;
-  level[node] = l;
+  level[node] = level[p] + 1;
+  for (int k = 1; k <= M; k++) {
+    par[node][k] = par[par[node][k - 1]][k - 1];
+  }
   for (int to : adj[node]) {
     if (to != p) {
-      dfs(to, node, l + 1);
+      dfs(to, node);
     }
   }
 }
 
-int LCA(int x, int y) {
-  if (level[x] < level[y]) {
-    swap(x, y);
+int lca(int u, int v) {
+  if (level[u] < level[v]) {
+    swap(u, v);
   }
-  int d = level[x] - level[y];
-  while (d > 0) {
-    int k = (int) log2(d);
-    x = par[x][k];
-    d -= (1 << k);
-  }
-  if (x == y) {
-    return x;
-  }
-  for (int i = M - 1; i >= 0; i--) {
-    if (par[x][i] != -1 && par[x][i] != par[y][i]) {
-      x = par[x][i];
-      y = par[y][i];
+  for (int k = M; k >= 0; k--) {
+    if (level[par[u][k]] >= level[v]) {
+      u = par[u][k];
     }
   }
-  return par[x][0];
+  if (u == v) {
+    return u;
+  }
+  for (int k = M; k >= 0; k--) {
+    if (par[u][k] != -1 && par[u][k] != par[v][k]) {
+      u = par[u][k];
+      v = par[v][k];
+    }
+  }
+  return par[u][0];
+}
+
+int dist(int u, int v) {
+  int l = lca(u, v);
+  return level[u] + level[v] - 2 * level[l];
+}
+
+// kth ancestor of u
+int kth(int u, int k) {
+  for (int i = 0; i <= M; i++) {
+    if (k & (1 << i)) {
+      u = par[u][i];
+    }
+  }
+  return u;
 }
 
 int main() {
@@ -43,28 +60,12 @@ int main() {
   cin.tie(0);
   int n;
   cin >> n;
-  for (int i = 0; i < n - 1; i++) {
+  for (int i = 1; i < n; i++) {
     int x, y;
     cin >> x >> y;
     adj[x].push_back(y);
     adj[y].push_back(x);
   }
-  memset(par, -1, sizeof par);
-  dfs(1, -1, 0);
-  int m = (int) log2(n);
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= m; j++) {
-      if (par[i][j - 1] != -1) {
-        par[i][j] = par[par[i][j - 1]][j - 1];
-      }
-    }
-  }
-  int q;
-  cin >> q;
-  while (q--) {
-    int x, y;
-    cin >> x >> y;
-    cout << "LCA(" << x << ", " << y << ") = " << LCA(x, y) << '\n';
-  }
+  dfs(1);
   return 0;
 }
