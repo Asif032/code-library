@@ -81,7 +81,28 @@ bool in_tri(pt p, pt a, pt b, pt c) {
 
 //intersection pt of l1 and l2, returns INV if they are nonintersecting / parallel / identical
 pt intsct(line l1, line l2) {
-  if(parallel(l1.D, l2.D)) return INV;
+  if (parallel(l1.D, l2.D)) return INV;
+  pt p = l1.P + l1.D * CRS(l2.D, l2.P - l1.P) / CRS(l2.D, l1.D);
+  return on_line(p, l1) && on_line(p, l2) ? p : INV;
+}
+
+//common point pt of segment l1 and l2, returns INV if they are nonintersecting / disjoint
+pt common_seg(line l1, line l2) {
+  if (parallel(l1.D, l2.D)) {
+    if (on_line(l1.P, l2)) {
+      return l1.P;
+    }
+    if (on_line(l1.P + l1.D, l2)) {
+      return l1.P + l1.D;
+    }
+    if (on_line(l2.P, l1)) {
+      return l2.P;
+    }
+    if (on_line(l2.P + l2.D, l1)) {
+      return l2.P + l2.P + l2.D;
+    }
+    return INV;
+  }
   pt p = l1.P + l1.D * CRS(l2.D, l2.P - l1.P) / CRS(l2.D, l1.D);
   return on_line(p, l1) && on_line(p, l2) ? p : INV;
 }
@@ -89,7 +110,7 @@ pt intsct(line l1, line l2) {
 //closest pt on l to p
 pt cl_pt_on_l(pt p, line l) {
   pt q = l.P + DOT(U(l.D), p - l.P) * U(l.D);
-  if(on_line(q, l)) return q;
+  if (on_line(q, l)) return q;
   return abs(p - l.P) < abs(p - l.P - l.D) ? l.P : l.P + l.D;
 }
 
@@ -102,7 +123,7 @@ pt refl_pt(pt p, line l) { l.S = 0; return (ld)2 * cl_pt_on_l(p, l) - p; }
 //ray r reflected off l (if no intersection, returns original ray)
 line reflect_line(line r, line l) {
   pt p = intsct(r, l);
-  if(Z(p - INV)) return r;
+  if (Z(p - INV)) return r;
   return line(p, INF * (p - refl_pt(r.P, l)), 1);
 }
 
@@ -143,7 +164,7 @@ circ circumcirc(pt a, pt b, pt c) {
 
 //returns true if p is contained in the convex hull given by hu / hd
 bool in_hull(pt p, pair<vector<pt>, vector<pt>>& h) {
-  if(p < *h.first.begin() || *h.second.begin() < p) return false;
+  if (p < *h.first.begin() || *h.second.begin() < p) return false;
   auto u = upper_bound(A(h.first), p);
   auto d = lower_bound(h.second.rbegin(), h.second.rend(), p);
   return CRS(*u - p, *(u - 1) - p) > 0 && CRS(*(d - 1) - p, *d - p) > 0; //change to >= if border counts as "inside"
@@ -180,7 +201,7 @@ vector<pt> full_hull(vector<pt>& pts) {
 
 //helper function for dyn_in_hull
 bool dyn_in(pt p, set<pt>& h) {
-  if(h.empty() || p < *h.begin() || *h.rbegin() < p) return false;
+  if (h.empty() || p < *h.begin() || *h.rbegin() < p) return false;
   auto i = h.upper_bound(p), j = i--;
   return CRS(*j - p, *i - p) > 0; //change to >= if border counts as "inside"
 }
@@ -190,15 +211,15 @@ bool dyn_in_hull(pt p, pair<set<pt>, set<pt>>& h) { return dyn_in(p, h.first) &&
 
 //helper function for dyn_add
 void fix_bad(set<pt>::iterator i, set<pt>&h, bool l) {
-  if(i == --h.begin() || i == h.end()) return;
+  if (i == --h.begin() || i == h.end()) return;
   pt p = *i; h.erase(p);
-  if(!dyn_in(p, h)) h.insert(p);
+  if (!dyn_in(p, h)) h.insert(p);
   else fix_bad(l ? --h.lower_bound(p) : h.upper_bound(p), h, l);
 }
 
 //helper function for dyn_add_to_hull
 void dyn_add(pt p, set<pt>& h) {
-  if(dyn_in(p, h)) return;
+  if (dyn_in(p, h)) return;
   h.insert(p);
   fix_bad(--h.lower_bound(p), h, true);
   fix_bad(h.upper_bound(p), h, false);
@@ -228,8 +249,8 @@ bool in_poly(pt p, vector<pt>& poly) {
   pt lst = poly.back();
   for(pt q : poly) {
     line s = line(q, lst, 1); lst = q;
-    if(on_line(p, s)) return true; //change if border not included
-    else if(!Z(intsct(l, s) - INV)) ans = !ans;
+    if (on_line(p, s)) return true; //change if border not included
+    else if (!Z(intsct(l, s) - INV)) ans = !ans;
   }
   return ans;
 }
@@ -296,24 +317,23 @@ vector<pt> intsct(circ c, line l) {
 vector<line> circTangents(circ c1, circ c2) {
   pt d = c2.C - c1.C;
   ld dr = c1.R - c2.R, d2 = norm(d), h2 = d2 - dr * dr;
-  if(Z(d2) || h2 < 0) return {};
+  if (Z(d2) || h2 < 0) return {};
   vector<line> ans;
   for(ld sg : {-1, 1}) {
     pt u = (d * dr + d * I * sqrt(h2) * sg) / d2;
     ans.push_back(line(c1.C + u * c1.R, c2.C + u * c2.R, 1));
   }
-  if(Z(h2)) ans.pop_back();
+  if (Z(h2)) ans.pop_back();
   return ans;
 }
 
 int main() {
-    ll t;
-    cin>>t;
-    while (t--) {
-        ll x1, y1, x2, y2, r1, r2;
-        cin>>x1>>y1>>x2>>y2>>r1>>r2;
-        auto ret = intsct(circ{{x1, y1}, r1}, circ{{x2, y2}, r2});
-        if (ret.size())cout<<"YES\n";
-        else cout<<"NO\n";
-    }
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  int T = 1;
+  cin >> T;
+  while (T--) {
+    
+  }
+  return 0;
 }

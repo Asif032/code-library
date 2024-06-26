@@ -19,7 +19,7 @@ void dfs(int node, int p = 0) {
   }
 }
 
-int lca(int u, int v) {
+int LCA(int u, int v) {
   if (level[u] < level[v]) {
     swap(u, v);
   }
@@ -41,7 +41,7 @@ int lca(int u, int v) {
 }
 
 int dist(int u, int v) {
-  int l = lca(u, v);
+  int l = LCA(u, v);
   return level[u] + level[v] - 2 * level[l];
 }
 

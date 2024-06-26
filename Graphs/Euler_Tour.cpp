@@ -3,17 +3,17 @@ using namespace std;
 
 const int N = 2e5 + 5;
 vector<int> adj[N];
-int in[N], out[N], flat[N];
+int tin[N], tout[N], flat[N];
 int timer;
 
 void dfs(int node, int par) {
-  in[node] = ++timer;
+  tin[node] = ++timer;
   for (int to : adj[node]) {
     if (to != par) {
       dfs(to, node);
     }
   }
-  out[node] = timer;
+  tout[node] = timer;
 }
 
 int main() {
@@ -29,10 +29,10 @@ int main() {
   }
   dfs(1, -1);
   for (int i = 1; i <= n; i++) {
-    cout << i << ' ' << in[i] << ' ' << out[i] << '\n';
+    cout << i << ' ' << tin[i] << ' ' << tout[i] << '\n';
   }
   for (int i = 1; i <= n; i++) {
-    flat[in[i]] = i;
+    flat[tin[i]] = i;
   }
   for (int i = 1; i <= n; i++) {
     cout << flat[i] << " \n"[i == n];
